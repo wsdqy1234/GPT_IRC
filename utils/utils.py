@@ -1,3 +1,4 @@
+import os
 import json
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import DataLoader
@@ -8,17 +9,17 @@ from mingpt.model import GPT
 
 
 
-def hand2list(json_path):
-    """
-    Input: json_path (once a file)
-    return: hand = [h1, h2, ..., hn], h1 = {dict}
-    """
-    hand = []
-    with open(json_path, 'r') as f:
-        for line in f:
-            data = json.loads(line)
-            hand.append(data)
-    return hand
+# def hand2list(json_path):
+#     """
+#     Input: json_path (once a file)
+#     return: hand = [h1, h2, ..., hn], h1 = {dict}
+#     """
+#     hand = []
+#     with open(json_path, 'r') as f:
+#         for line in f:
+#             data = json.loads(line)
+#             hand.append(data)
+#     return hand
 
 
 def act_history2list(action_history_dict):
@@ -30,39 +31,32 @@ def act_history2list(action_history_dict):
     return action_history
 
 
-def hand_parser(hand_list):
-    
-    
-    return
-
-
-class Hand_Dataset(Dataset):
-    """ Dataset for Texas Hold'em in IRC Database 
-
-    Args:
-        Dataset (_type_): _description_
+def load_hands(dataset_path, max_hands):
     """
-    def __init__(self):
-        super().__init__()
-        
-        
-        
+    Input:  Parsed Dataset Path and 
+    Return: max_hands*10000 hands in the Dataset
+            hand = [h1, h2, ..., hn], h1 = {dict}
+    """
+    all_hands = []
     
-    def __len__(self):
-        return
-    
-    def __getitem__(self, idx):
+    for i, subdir in enumerate(os.listdir(dataset_path)):
+        if (i+1) > max_hands: break
         
-        return super().__getitem__(idx)
-    
-    def get_vocab_size(self):
+        subdir_path = os.path.join(dataset_path, subdir) # example: ./data/Parser/parser_1-10000
         
-        return 1
+        if os.path.isdir(subdir_path):
+            for file in os.listdir(subdir_path):    # example: ./data/Parser/parser_1-10000/hands_valid_1.json
+                if file.endswith(".json"):
+                    json_path = os.path.join(subdir_path, file)
+                    
+                    with open(json_path, 'r') as f:
+                        for line in f:
+                            data = json.loads(line)
+                            all_hands.append(data)
     
-    def get_block_size(self):
-        
-        return 2
+    return all_hands
     
+
 
 # class Hand_DataLoader(DataLoader):
     

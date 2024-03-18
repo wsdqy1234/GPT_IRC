@@ -1,9 +1,11 @@
 from data.IRC_Poker import IRC_Poker_Dataset
 
 # test
-data_root = "./hands_valid_1.json"
+# data_root = "./hands_valid_1.json"
+dataset_root = "./data/Parser"
+max_hands = 1
 
-irc_poker = IRC_Poker_Dataset(data_root)
+irc_poker = IRC_Poker_Dataset(dataset_root, max_hands)
 
 
 length = len(irc_poker)
