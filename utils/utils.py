@@ -10,6 +10,7 @@ from mingpt.model import GPT
 
 def hand2list(json_path):
     """
+    Input: json_path (once a file)
     return: hand = [h1, h2, ..., hn], h1 = {dict}
     """
     hand = []
@@ -18,6 +19,16 @@ def hand2list(json_path):
             data = json.loads(line)
             hand.append(data)
     return hand
+
+
+def act_history2list(action_history_dict):
+    """
+    Input: action_history_dict
+    Return: action_history = [act1, act2, ..., actn]
+    """
+    action_history = [action_history_dict[str(i)] for i in range(1, len(action_history_dict)+1)]
+    return action_history
+
 
 def hand_parser(hand_list):
     
