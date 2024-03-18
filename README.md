@@ -1,4 +1,3 @@
-假设你现在想利用Python实现一个GPT模型的Dataset和DataLoader，它接受来自"hands_valid_1.json"的输入。任务定义是这样的：
 "hands_valid_1.json"中每一行作为一个样本，它的含义是德州扑克中的一次行动描述。
 <context字段表示当前行动的角色身份role、场上信息num_players、当前行动的角色位置position（从1开始）、每个角色的筹码数量bankroll、当前场上可见的公共牌board、当前行动角色的手牌pocket_cards。>
 <action_history字段表示当前行动前的所有历史行动，顺序由数字指定（如"1"，"2"等），该历史行动对应的角色身份role，该历史行动对应的德扑游戏阶段stage，该历史行动的具体行动action。>
