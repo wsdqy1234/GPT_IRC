@@ -2,54 +2,57 @@ import json
 import torch
 from torch.utils.data import Dataset, DataLoader
 
+from transformers import GPT2Tokenizer
 
 from utils.utils import hand2list, act_history2list
+
+
 
 # Action Template
 ROLE_LIST = ['small blind', 'big blind', 'position 1']
 STAGE_LIST = ['preflop', 'flop', 'turn', 'river', 'showdown']
 ACTION_LIST = ['no action', 'blind bet', 'fold', 'check', 'bet', 'call', 'raise', 'all-in', 'quits game', 'kicked from game']
 
+
+
 class IRC_Poker_Dataset(Dataset):
     """
     Read the Parsed Hands from IRC Database
     """
-    def __init__(self, data_root=None):
+    def __init__(self, data_root=None, tokenizer=None):
         json_path = data_root
         hand = hand2list(json_path)
         
+        self.tokenizer = GPT2Tokenizer.from_pretrained('openai-community/gpt2') if tokenizer is None else tokenizer
+        self.tokenizer.pad_token = self.tokenizer.eos_token
+        
         self.data = hand
+        self.encodings = []
+        
+        for _, sample in enumerate(self.data):
+            context = sample["context"]
+            action_history_dict = sample["action_history"]
+            action_history = act_history2list(action_history_dict) # Turn action_history into a list
+            next_action = sample["next_action"]
+            
+            # Tokenizer + Embedding
+            encode_context = self.tokenizer.encode(str(context))
+            encode_action_history = self.tokenizer.encode(str(action_history))
+            encode_next_action = self.tokenizer.encode(str(next_action))
+
+
+            self.encodings.append({
+                "encode_context": encode_context,
+                "encode_action_history": encode_action_history,
+                "encode_next_action": encode_next_action
+            })
         
     def __len__(self):
-        return len(self.data)
+        return len(self.encodings)
 
     def __getitem__(self, idx):
-        sample = self.data[idx]
-        
-        # Split
-        context = sample["context"]
-        action_history_dict = sample["action_history"]
-        next_action = sample["next_action"]
-        
-        # Turn action_history into a list
-        action_history = act_history2list(action_history_dict)
-        
-        return context, action_history, next_action
+        encode_context = self.encodings[idx]['encode_context']
+        encode_action_history = self.encodings[idx]['encode_action_history']
+        encode_next_action = self.encodings[idx]['encode_next_action']
 
-
-if __name__ == "__main__":
-    import os
-    print("Current working directory:", os.getcwd())
-    
-    # test
-    data_root = "./hands_valid_1.json"
-    
-    irc_poker = IRC_Poker_Dataset(data_root)
-    
-    context, action_history, next_action = irc_poker[28]
-    length = len(irc_poker)
-    
-    print("Length: {}".format(length))
-    print("Context: {}".format(context))
-    print("Action_history: {}".format(action_history))
-    print("Next_action: {}".format(next_action))
+        return encode_context, encode_action_history, encode_next_action
