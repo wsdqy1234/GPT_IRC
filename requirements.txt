@@ -1,0 +1,5 @@
+# python >=3.9
+angchain==0.0.229
+pydantic==1.10.9
+json
+transformers

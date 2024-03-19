@@ -1,3 +1,4 @@
 __pycache__/
-data/Parser/*
 .DS_Store
+data/Parser/*
+data/irc_poker_dataset.pkl

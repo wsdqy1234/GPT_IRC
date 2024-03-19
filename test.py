@@ -1,18 +1,19 @@
-from data.IRC_Poker import IRC_Poker_Dataset
+from data.IRC_Poker import IRC_Poker_Dataset, save_dataset, load_dataset
 
-# test
-# data_root = "./hands_valid_1.json"
-dataset_root = "./data/Parser"
-max_hands = 1
+# dataset_root = "./data/Parser"
+# max_hands = 1
+# irc_poker_dataset = IRC_Poker_Dataset(dataset_root, max_hands)
 
-irc_poker = IRC_Poker_Dataset(dataset_root, max_hands)
+# Save Dataset encodings
+save_path = "./data/irc_poker_dataset.pkl"
+# save_dataset(irc_poker_dataset, save_path)
 
+# Load encodings to form Dataset
+loaded_dataset = load_dataset(save_path)
+loaded_encodings = loaded_dataset.encodings
+loaded_attention_mask = loaded_dataset.attention_mask
 
-length = len(irc_poker)
-encode_context, encode_action_history, encode_next_action = irc_poker[length-1]
+print(loaded_encodings[0])
+print(loaded_attention_mask[0])
 
-
-print("Length: {}".format(length))
-print("Context: {}".format(encode_context))
-print("Action_history: {}".format(encode_action_history))
-print("Next_action: {}".format(encode_next_action))
+print("Finished")
