@@ -1,0 +1,6 @@
+对于max_hands=1，即1万手：
+    max_length_context = 53
+    max_length_act_his = 231
+    max_length_next_act = 7
+
+对于max_hands=40，即所有40万手：
